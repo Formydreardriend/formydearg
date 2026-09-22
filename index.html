@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>غزل — در میان ستاره‌ها</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --text:#e8e3ff;
+    --text-dim:rgba(232,227,255,.5);
+    --text-soft:rgba(232,227,255,.75);
+    --accent-1:#a78bfa;
+    --accent-2:#f4a6c0;
+    --accent-3:#7dd3fc;
+    --glow:rgba(167,139,250,.5);
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:grid;
+    place-items:center;
+    padding:40px 20px;
+    font-family:'Vazirmatn',sans-serif;
+    color:var(--text);
+    background:#04030a;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  /* ===== لایه‌های پس‌زمینه ===== */
+  .space-bg{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    overflow:hidden;
+    background:
+      radial-gradient(ellipse 80% 60% at 80% 10%, rgba(120,60,180,.35) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 15% 85%, rgba(220,80,150,.22) 0%, transparent 55%),
+      radial-gradient(ellipse 60% 60% at 50% 50%, rgba(60,100,200,.15) 0%, transparent 65%),
+      radial-gradient(circle at 50% 50%, #0a0820 0%, #05030f 45%, #020106 100%);
+  }
+
+  /* سحابی‌های نرم */
+  .nebula{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(90px);
+    opacity:.55;
+    animation:drift 40s ease-in-out infinite;
+  }
+  .nebula.n1{
+    width:60vw; height:60vw; max-width:700px; max-height:700px;
+    top:-15%; right:-10%;
+    background:radial-gradient(circle, rgba(167,139,250,.5), transparent 65%);
+  }
+  .nebula.n2{
+    width:50vw; height:50vw; max-width:600px; max-height:600px;
+    bottom:-10%; left:-10%;
+    background:radial-gradient(circle, rgba(244,166,192,.4), transparent 65%);
+    animation-delay:-15s;
+  }
+  .nebula.n3{
+    width:40vw; height:40vw; max-width:500px; max-height:500px;
+    top:40%; left:50%;
+    background:radial-gradient(circle, rgba(125,211,252,.28), transparent 65%);
+    animation-delay:-25s;
+  }
+  @keyframes drift{
+    0%,100%{transform:translate(0,0) scale(1);}
+    33%{transform:translate(30px,-25px) scale(1.08);}
+    66%{transform:translate(-25px,20px) scale(.95);}
+  }
+
+  /* ===== ستاره‌ها ===== */
+  .stars{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+  }
+  .star{
+    position:absolute;
+    border-radius:50%;
+    background:#fff;
+    box-shadow:0 0 6px rgba(255,255,255,.8);
+  }
+  .star.twinkle{
+    animation:twinkle var(--dur,3s) ease-in-out infinite;
+    animation-delay:var(--delay,0s);
+  }
+  @keyframes twinkle{
+    0%,100%{opacity:var(--min,.35); transform:scale(1);}
+    50%{opacity:1; transform:scale(1.25);}
+  }
+
+  /* سیاره نورانی */
+  .planet{
+    position:absolute;
+    width:180px; height:180px;
+    border-radius:50%;
+    top:8%; left:12%;
+    background:radial-gradient(circle at 35% 35%, #f4a6c0, #a78bfa 45%, #4c1d95 80%);
+    box-shadow:
+      0 0 60px rgba(167,139,250,.5),
+      0 0 120px rgba(244,166,192,.3),
+      inset -20px -20px 40px rgba(0,0,0,.5);
+    opacity:.55;
+    animation:floatPlanet 20s ease-in-out infinite;
+    z-index:1;
+  }
+  @keyframes floatPlanet{
+    0%,100%{transform:translate(0,0);}
+    50%{transform:translate(15px,-12px);}
+  }
+
+  /* ستاره دنباله‌دار */
+  .shooting-star{
+    position:fixed;
+    width:2px;
+    height:2px;
+    background:#fff;
+    border-radius:50%;
+    box-shadow:0 0 8px 2px rgba(255,255,255,.9);
+    pointer-events:none;
+    z-index:2;
+  }
+  .shooting-star::before{
+    content:"";
+    position:absolute;
+    top:50%; left:0;
+    width:120px; height:1px;
+    transform:translateY(-50%);
+    background:linear-gradient(90deg, rgba(255,255,255,.9), transparent);
+    border-radius:99px;
+  }
+  .shooting-star.animate{
+    animation:shoot 1.6s ease-out forwards;
+  }
+  @keyframes shoot{
+    0%{transform:translate(0,0) rotate(-35deg); opacity:0;}
+    10%{opacity:1;}
+    100%{transform:translate(-500px, 350px) rotate(-35deg); opacity:0;}
+  }
+
+  /* ===== محتوا ===== */
+  .app{
+    position:relative;
+    z-index:5;
+    width:min(680px,100%);
+    text-align:center;
+  }
+
+  h1{
+    margin:0 0 10px;
+    font-size:clamp(2.4rem,8vw,3.6rem);
+    font-weight:700;
+    letter-spacing:-.02em;
+    background:linear-gradient(180deg,#ffffff 0%,#c4b5fd 55%,#a78bfa 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    filter:drop-shadow(0 0 30px rgba(167,139,250,.55));
+  }
+  .sub{
+    margin:0 0 44px;
+    font-size:clamp(.85rem,3vw,1rem);
+    font-weight:300;
+    color:var(--text-soft);
+    letter-spacing:.03em;
+  }
+  .sub::before, .sub::after{
+    content:"✦";
+    margin:0 12px;
+    color:var(--accent-1);
+    opacity:.6;
+    font-size:.8em;
+  }
+
+  /* کارت شیشه‌ای */
+  .card{
+    position:relative;
+    min-height:clamp(240px,42vh,310px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:clamp(36px,7vw,58px) clamp(24px,6vw,48px);
+    border-radius:20px;
+    background:linear-gradient(160deg, rgba(20,18,45,.65) 0%, rgba(10,8,25,.75) 100%);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border:1px solid rgba(167,139,250,.22);
+    box-shadow:
+      0 30px 70px rgba(0,0,0,.6),
+      0 0 60px rgba(167,139,250,.12),
+      inset 0 1px 0 rgba(255,255,255,.08);
+    cursor:pointer;
+    overflow:hidden;
+    transition:all .5s cubic-bezier(.2,.7,.3,1);
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    top:-50%; left:-50%;
+    width:200%; height:200%;
+    background:conic-gradient(from 0deg, transparent 0deg, rgba(167,139,250,.15) 60deg, transparent 120deg, transparent 240deg, rgba(244,166,192,.12) 300deg, transparent 360deg);
+    animation:spin 12s linear infinite;
+    pointer-events:none;
+    opacity:.7;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .card::after{
+    content:"";
+    position:absolute;
+    inset:1px;
+    border-radius:19px;
+    background:linear-gradient(160deg, rgba(20,18,45,.92) 0%, rgba(10,8,25,.96) 100%);
+    pointer-events:none;
+  }
+
+  .card:hover{
+    border-color:rgba(167,139,250,.5);
+    box-shadow:
+      0 30px 80px rgba(0,0,0,.7),
+      0 0 80px rgba(167,139,250,.25),
+      inset 0 1px 0 rgba(255,255,255,.12);
+    transform:translateY(-2px);
+  }
+
+  .reason{
+    position:relative;
+    z-index:1;
+    font-size:clamp(1.15rem,4.2vw,1.55rem);
+    font-weight:400;
+    line-height:2.1;
+    color:var(--text);
+    text-shadow:0 0 30px rgba(167,139,250,.35);
+    word-break:break-word;
+  }
+  .reason.animate{
+    animation:reasonIn .8s cubic-bezier(.2,.7,.3,1) both;
+  }
+  @keyframes reasonIn{
+    from{opacity:0; transform:translateY(16px) scale(.97); filter:blur(6px);}
+    to  {opacity:1; transform:translateY(0) scale(1); filter:blur(0);}
+  }
+
+  /* ===== متادیتا ===== */
+  .meta{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    margin:30px 0 26px;
+    font-size:.8rem;
+    font-weight:300;
+    color:var(--text-dim);
+    letter-spacing:.08em;
+  }
+  .meta .num{
+    font-weight:500;
+    color:var(--text-soft);
+    font-variant-numeric:tabular-nums;
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .meta .num::before{
+    content:"";
+    width:6px; height:6px;
+    border-radius:50%;
+    background:var(--accent-1);
+    box-shadow:0 0 10px var(--glow);
+  }
+  .progress{
+    flex:1;
+    height:2px;
+    background:rgba(167,139,250,.15);
+    border-radius:99px;
+    overflow:hidden;
+    position:relative;
+  }
+  .bar{
+    height:100%;
+    width:0;
+    border-radius:99px;
+    background:linear-gradient(90deg,#7dd3fc, #a78bfa 40%, #f4a6c0 100%);
+    box-shadow:0 0 12px rgba(167,139,250,.7);
+    transition:width .6s cubic-bezier(.2,.7,.3,1);
+  }
+
+  /* ===== دکمه‌ها ===== */
+  .controls{
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  button{
+    font-family:'Vazirmatn',sans-serif;
+    font-size:.9rem;
+    font-weight:500;
+    padding:12px 26px;
+    border-radius:12px;
+    border:1px solid rgba(167,139,250,.28);
+    background:rgba(167,139,250,.06);
+    color:var(--text-soft);
+    cursor:pointer;
+    transition:all .3s ease;
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+  }
+  button:hover{
+    background:rgba(167,139,250,.15);
+    border-color:rgba(167,139,250,.6);
+    color:#fff;
+    box-shadow:0 0 30px rgba(167,139,250,.3);
+    transform:translateY(-1px);
+  }
+  button.primary{
+    background:linear-gradient(135deg, #a78bfa 0%, #f4a6c0 100%);
+    color:#0a0820;
+    border-color:transparent;
+    font-weight:600;
+    box-shadow:0 8px 30px rgba(167,139,250,.4);
+  }
+  button.primary:hover{
+    background:linear-gradient(135deg, #c4b5fd 0%, #f9bcd4 100%);
+    color:#0a0820;
+    box-shadow:0 12px 40px rgba(167,139,250,.6);
+  }
+  button:disabled{
+    opacity:.25;
+    cursor:not-allowed;
+    transform:none;
+    box-shadow:none;
+  }
+  button:disabled:hover{
+    background:rgba(167,139,250,.06);
+    border-color:rgba(167,139,250,.28);
+    color:var(--text-soft);
+    transform:none;
+    box-shadow:none;
+  }
+
+  /* ===== پیام پایانی ===== */
+  .final{
+    display:none;
+    padding:clamp(40px,8vw,64px) clamp(24px,6vw,48px);
+    border-radius:20px;
+    background:linear-gradient(160deg, rgba(20,18,45,.75) 0%, rgba(10,8,25,.85) 100%);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border:1px solid rgba(167,139,250,.35);
+    box-shadow:
+      0 30px 80px rgba(0,0,0,.7),
+      0 0 80px rgba(167,139,250,.2);
+    animation:reasonIn 1s ease both;
+  }
+  .final h2{
+    margin:0 0 22px;
+    font-size:clamp(1.4rem,5vw,1.9rem);
+    font-weight:700;
+    background:linear-gradient(180deg,#ffffff,#c4b5fd,#a78bfa);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    filter:drop-shadow(0 0 24px rgba(167,139,250,.6));
+  }
+  .final p{
+    margin:0;
+    font-size:clamp(1rem,3.6vw,1.2rem);
+    font-weight:400;
+    line-height:2.2;
+    color:var(--text);
+    text-shadow:0 0 24px rgba(167,139,250,.3);
+  }
+  .final .heart{
+    display:block;
+    margin-top:26px;
+    font-size:1.6rem;
+    color:var(--accent-2);
+    animation:pulse 2.4s ease-in-out infinite;
+    filter:drop-shadow(0 0 16px rgba(244,166,192,.8));
+  }
+  @keyframes pulse{
+    0%,100%{transform:scale(1); opacity:.85;}
+    50%{transform:scale(1.2); opacity:1;}
+  }
+
+  @media (max-width:420px){
+    .reason{font-size:1.05rem; line-height:2;}
+    button{padding:10px 20px; font-size:.85rem;}
+    .planet{width:110px; height:110px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="space-bg">
+  <div class="nebula n1"></div>
+  <div class="nebula n2"></div>
+  <div class="nebula n3"></div>
+  <div class="planet"></div>
+  <div class="stars" id="stars"></div>
+</div>
+
+<div class="app">
+  <h1>غزل</h1>
+  <p class="sub">۱۰۰ دلیل که چرا تو بهترین دوست دنیایی</p>
+
+  <div class="card" id="card">
+    <div class="reason animate" id="reason">برای دیدن اولین دلیل، روی کارت بزن…</div>
+  </div>
+
+  <div class="meta">
+    <span class="num" id="counter">۰ / ۱۰۰</span>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+  </div>
+
+  <div class="controls" id="controls">
+    <button class="primary" id="nextBtn">دلیل بعدی</button>
+    <button id="prevBtn" disabled>قبلی</button>
+    <button id="resetBtn">از اول</button>
+  </div>
+
+  <div class="final" id="final">
+    <h2>و دلیل صدم…</h2>
+    <p>چون غزل، تو خودِ دوستی.<br>ممنون که هستی.</p>
+    <span class="heart">✦</span>
+  </div>
+</div>
+
+<script>
+const reasons = [
+  "چون اسمت خودش یک شعر است؛ غزل.",
+  "چون وقتی حالم بد می‌شود، تو پیش از آنکه بگویم می‌فهمی.",
+  "چون صدایت شبیه خانه است؛ آرام و آشنا.",
+  "چون با تو سکوت هم قشنگ است.",
+  "چون هیچ‌وقت قضاوتم نمی‌کنی.",
+  "چون رازهایم پیش تو امن‌اند.",
+  "چون مهربانی‌ات واقعی است، از ته قلب.",
+  "چون وقتی می‌ترسم، دستم را رها نمی‌کنی.",
+  "چون اجازه می‌دهی خودم باشم، بی‌نقاب.",
+  "چون اشک‌هایم را مسخره نمی‌کنی، آرامم می‌کنی.",
+  "چون در بدترین روزهایم هم پیدایم می‌کنی.",
+  "چون بلدی حال خرابم را درست کنی.",
+  "چون بخشیدن را بلدی، بی‌منّت.",
+  "چون از عذرخواهی کردن نمی‌ترسی.",
+  "چون قلبت بزرگ‌تر از آن است که خودت فکرش را می‌کنی.",
+  "چون خنده‌ات حال آدم را عوض می‌کند.",
+  "چون شوخی‌هایت همیشه از سر محبت است.",
+  "چون لحظه‌های معمولی را با خودت خاص می‌کنی.",
+  "چون با تو حتی صف کشیدن هم خاطره می‌شود.",
+  "چون از هیچ، خاطره‌های قشنگ می‌سازی.",
+  "چون صدای خنده‌ات برایم یادگاری است.",
+  "چون شوخی‌های تکراری‌مان را هنوز دوست دارم.",
+  "چون می‌دانی کِی جدی باشی، کِی شیطون.",
+  "چون انرژی‌ات آدم را زنده می‌کند.",
+  "چون هر جا برویم، با تو خوش می‌گذرد.",
+  "چون خاطرات بامزه می‌سازی، بی‌آنکه بخواهی.",
+  "چون حوصله‌ات برای من تمام نمی‌شود.",
+  "چون رفیق شب‌های بی‌خوابی هستی.",
+  "چون با تو خندیدن از هر دارویی بهتر است.",
+  "چون وقتی کارم گیر است، تنهایم نمی‌گذاری.",
+  "چون پشتم را خالی نمی‌کنی.",
+  "چون از حقم دفاع می‌کنی، حتی وقتی نیستم.",
+  "چون در تصمیم‌های سخت کنارم می‌مانی.",
+  "چون بدون من هم به فکرم هستی.",
+  "چون هوایم را داری، بی‌آنکه بگویم.",
+  "چون می‌توانم رویت حساب کنم، همیشه.",
+  "چون قولت را عمل می‌کنی.",
+  "چون وقتت را برایم می‌گذاری، بی‌بهانه.",
+  "چون در شادی‌هایم بیشتر از خودم خوشحال می‌شوی.",
+  "چون در موفقیت‌هایم حسادت نمی‌کنی، افتخار می‌کنی.",
+  "چون اشتباهم را به رویم نمی‌آوری، مگر برای بهتر شدنم.",
+  "چون نگرانم می‌شوی، بی‌آنکه بخواهی نشان دهی.",
+  "چون به آینده‌ام اهمیت می‌دهی.",
+  "چون همیشه یک قدم پشتم هستی.",
+  "چون مجبورم نمی‌کنی چیزی را بگویم.",
+  "چون سکوت را با من تحمل می‌کنی.",
+  "چون در جمع هوایم را داری.",
+  "چون پشت سرم حرف نمی‌زنی.",
+  "چون نقاط ضعفم را دوست داری، نه تحمل.",
+  "چون مرزهایم را رعایت می‌کنی.",
+  "چون برای نظرم ارزش قائلی.",
+  "چون با کسی مقایسه‌ام نمی‌کنی.",
+  "چون همان‌طور که هستم قبولم داری.",
+  "چون تنهایم نمی‌گذاری، حتی در سکوت.",
+  "چون خجالت‌هایم را می‌فهمی.",
+  "چون در روزهای سخت رهایم نمی‌کنی.",
+  "چون به احساساتم اهمیت می‌دهی.",
+  "چون قهرمان بی‌ادعای من هستی.",
+  "چون خانه‌ای امن برایم هستی.",
+  "چون روزی که تو را شناختم، یکی از بهترین روزهای زندگی‌ام شد.",
+  "چون با تو، خاطره‌های قدیمی هر بار تازه‌تر می‌شوند.",
+  "چون لحظه‌های ساده‌مان را قشنگ نگه داشته‌ای، همان‌طور که بودند.",
+  "چون زبان مشترکمان را هیچ‌کس دیگری بلد نیست.",
+  "چون آهنگ‌های مشترکمان را یادت هست.",
+  "چون با تو، حتی یک قدم زدن ساده هم شبیه یک سفر است.",
+  "چون شهر با تو رنگ دیگری دارد.",
+  "چون شب‌های بامزه‌مان فراموش‌نشدنی است.",
+  "چون با هم از اشتباهاتمان درس گرفتیم.",
+  "چون با هم بزرگ شدیم.",
+  "چون هنوز بعد از این همه وقت، ذوق می‌کنی.",
+  "چون همیشه برای دیدنم راهی پیدا می‌کنی.",
+  "چون با گذر زمان، دوستی‌مان نه کهنه شد، که عمیق‌تر شد.",
+  "چون خاطره‌سازی را بلدی.",
+  "چون هر دیدار کوتاه هم برایم کافی است.",
+  "چون به من انگیزه می‌دهی.",
+  "چون وقتی تنبلم، مهربانانه هلّم می‌دهی.",
+  "چون وقتی زیاد فکر می‌کنم، آرامم می‌کنی.",
+  "چون باعث می‌شوی بهتر شوم.",
+  "چون اشتباهاتم را فرصت می‌بینی، نه ضعف.",
+  "چون موفقیت‌هایم را جشن می‌گیری.",
+  "چون به توانایی‌هایم ایمان داری.",
+  "چون وقتی شک دارم، به من اعتماد می‌کنی.",
+  "چون با تو رشد کردن قشنگ‌تر است.",
+  "چون راهنمایی‌هایت از روی محبت است.",
+  "چون انتقادهایت سازنده است، نه دل‌شکن.",
+  "چون از تغییر کردن با هم نمی‌ترسیم.",
+  "چون می‌دانی کِی باید سکوت کنی.",
+  "چون می‌دانی کِی باید حرف بزنی.",
+  "چون همیشه نسخه بهتری از من می‌بینی.",
+  "چون برایم وقت می‌گذاری، بی‌دریغ.",
+  "چون پیام کوچکت حال روزم را خوب می‌کند.",
+  "چون یادت هست چه چیزهایی دوست دارم.",
+  "چون سلیقه‌ام را می‌شناسی.",
+  "چون هدیه‌هایت از ته قلب است.",
+  "چون به جزئیات توجه می‌کنی.",
+  "چون وقتی خسته‌ام، انرژی‌ام می‌دهی.",
+  "چون وقتی گم می‌شوم، راه را نشانم می‌دهی.",
+  "چون بودن با تو افتخار است.",
+  "چون تو مرا از خودم بهتر می‌شناسی.",
+  "چون غزل… تو خودِ دوستی."
+];
+
+const fa = n => n.toLocaleString('fa-IR');
+
+/* ===== ستاره‌ها ===== */
+const starsLayer = document.getElementById('stars');
+const STAR_COUNT = 180;
+
+for(let k = 0; k < STAR_COUNT; k++){
+  const s = document.createElement('div');
+  s.className = 'star';
+
+  // لایه‌ها: دور (کوچک)، میانه، نزدیک (بزرگ‌تر و درخشان‌تر)
+  const roll = Math.random();
+  let size, opacity, blur;
+  if(roll < 0.7){          // دور
+    size = 1 + Math.random() * 1;
+    opacity = 0.3 + Math.random() * 0.4;
+    blur = 0;
+  } else if(roll < 0.95){  // میانه
+    size = 1.5 + Math.random() * 1.5;
+    opacity = 0.5 + Math.random() * 0.4;
+    blur = 0.4;
+  } else {                 // نزدیک
+    size = 2.5 + Math.random() * 1.5;
+    opacity = 0.8 + Math.random() * 0.2;
+    blur = 0.8;
+  }
+
+  s.style.width = size + 'px';
+  s.style.height = size + 'px';
+  s.style.left = Math.random() * 100 + '%';
+  s.style.top = Math.random() * 100 + '%';
+  s.style.opacity = opacity;
+  if(blur) s.style.filter = `blur(${blur}px)`;
+
+  // حدود نیمی از ستاره‌ها چشمک می‌زنند
+  if(Math.random() < 0.55){
+    s.classList.add('twinkle');
+    s.style.setProperty('--dur', (2 + Math.random() * 4) + 's');
+    s.style.setProperty('--delay', (Math.random() * 6) + 's');
+    s.style.setProperty('--min', (opacity * 0.4).toFixed(2));
+  }
+
+  // چند ستاره رنگی
+  if(Math.random() < 0.1){
+    const colors = ['#a78bfa', '#7dd3fc', '#f4a6c0', '#fef3c7'];
+    s.style.background = colors[Math.floor(Math.random() * colors.length)];
+    s.style.boxShadow = `0 0 8px ${s.style.background}`;
+  }
+
+  starsLayer.appendChild(s);
+}
+
+/* ===== ستاره دنباله‌دار ===== */
+function createShootingStar(){
+  const star = document.createElement('div');
+  star.className = 'shooting-star';
+  star.style.top = (Math.random() * 50) + '%';
+  star.style.left = (40 + Math.random() * 60) + '%';
+  star.style.opacity = 0.6 + Math.random() * 0.4;
+  document.body.appendChild(star);
+
+  // شروع انیمیشن در فریم بعد
+  requestAnimationFrame(() => {
+    star.classList.add('animate');
+  });
+
+  setTimeout(() => star.remove(), 2000);
+}
+
+function scheduleShootingStar(){
+  const delay = 3500 + Math.random() * 6000;
+  setTimeout(() => {
+    createShootingStar();
+    scheduleShootingStar();
+  }, delay);
+}
+scheduleShootingStar();
+
+/* ===== منطق اسلایدر ===== */
+const card      = document.getElementById('card');
+const reasonEl  = document.getElementById('reason');
+const counterEl = document.getElementById('counter');
+const barEl     = document.getElementById('bar');
+const controls  = document.getElementById('controls');
+const finalEl   = document.getElementById('final');
+const nextBtn   = document.getElementById('nextBtn');
+const prevBtn   = document.getElementById('prevBtn');
+const resetBtn  = document.getElementById('resetBtn');
+
+let i = 0;
+
+function render(){
+  if(i >= reasons.length){
+    card.style.display = 'none';
+    document.querySelector('.meta').style.display = 'none';
+    controls.style.display = 'none';
+    finalEl.style.display = 'block';
+    return;
+  }
+
+  reasonEl.textContent = reasons[i];
+  reasonEl.classList.remove('animate');
+  void reasonEl.offsetWidth;
+  reasonEl.classList.add('animate');
+
+  counterEl.textContent = fa(i + 1) + ' / ' + fa(reasons.length);
+  barEl.style.width = ((i + 1) / reasons.length * 100) + '%';
+
+  prevBtn.disabled = i === 0;
+  nextBtn.textContent = (i === reasons.length - 1) ? 'پایان' : 'دلیل بعدی';
+}
+
+function next(){ if(i < reasons.length){ i++; render(); } }
+function prev(){ if(i > 0){ i--; render(); } }
+
+function reset(){
+  i = 0;
+  card.style.display = 'flex';
+  document.querySelector('.meta').style.display = 'flex';
+  controls.style.display = 'flex';
+  finalEl.style.display = 'none';
+  render();
+}
+
+nextBtn.addEventListener('click', next);
+prevBtn.addEventListener('click', prev);
+resetBtn.addEventListener('click', reset);
+card.addEventListener('click', next);
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'ArrowLeft')  next();
+  if(e.key === 'ArrowRight') prev();
+});
+
+let startX = null;
+card.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive:true});
+card.addEventListener('touchend', e => {
+  if(startX === null) return;
+  const dx = e.changedTouches[0].clientX - startX;
+  if(Math.abs(dx) > 50){ dx < 0 ? next() : prev(); }
+  startX = null;
+}, {passive:true});
+
+render();
+</script>
+</body>
+</html>
